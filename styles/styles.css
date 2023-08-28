@@ -1,0 +1,28 @@
+:root {
+  --primary: #08ac4c;
+  --primaryDarker: #089744;
+  --secondary: #5f0f8c;
+}
+
+.navbar {
+  background-color: rgb(225, 225, 225);
+}
+
+.btn-primary {
+  background: var(--primary);
+  border: var(--primary);
+}
+
+.btn-primary:hover {
+  background: var(--primaryDarker);
+}
+
+h1 {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+h2 {
+  color: var(--secondary);
+  font-weight: 800;
+}
