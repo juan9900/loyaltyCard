@@ -11,6 +11,8 @@ let jwt = "";
 const termsContainer = document.getElementById("terms-container");
 const priceContainer = document.getElementById("price-container");
 const registeredContainer = document.getElementById("registered-container");
+const submitSpinner = document.getElementById("submit-spinner");
+const submitButton = document.getElementById("submit-btn");
 
 async function enrollUser(url = "", data = {}, key) {
   let response;
@@ -102,6 +104,9 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   userForm.addEventListener("submit", (event) => {
     event.preventDefault();
+
+    submitButton.disabled = true;
+    submitSpinner.classList.remove("d-none");
     registeredContainer.innerText = "";
     const valid = validateForm();
     console.log(valid);
@@ -139,6 +144,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (isRegistered) {
           registeredContainer.innerText =
             "Ya te encuentras registrado, verifica tu correo si necesitas recuperar tu tarjeta.";
+          throw new Error("User is already registered");
         } else {
           console.log("im here");
 
@@ -169,6 +175,8 @@ document.addEventListener("DOMContentLoaded", async function () {
       })
       .catch((e) => {
         console.log(e);
+        submitButton.disabled = false;
+        submitSpinner.classList.add("d-none");
       });
   });
 });
