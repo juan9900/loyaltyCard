@@ -31,17 +31,23 @@ async function enrollUser(url = "", data = {}, key) {
 }
 
 async function callWebhook(url = "", data = {}, petition) {
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      // Add CORS headers to allow requests from any origin
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST",
-      "Access-Control-Allow-Headers": "Content-Type",
-    },
-    body: JSON.stringify({ userData: data, petition: petition }),
-  });
-  return response.json();
+  let response = "";
+  try {
+    response = await fetch(url, {
+      method: "POST",
+      headers: {
+        // Add CORS headers to allow requests from any origin
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST",
+        "Access-Control-Allow-Headers": "Content-Type",
+      },
+      body: JSON.stringify(data),
+    });
+    return response.json();
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
 }
 
 async function addUser(url = "", data = {}) {
@@ -96,7 +102,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   userForm.addEventListener("submit", (event) => {
     event.preventDefault();
-
+    registeredContainer.innerText = "";
     const valid = validateForm();
     console.log(valid);
     if (!valid) return;
@@ -125,41 +131,45 @@ document.addEventListener("DOMContentLoaded", async function () {
       "https://hook.eu1.make.com/rf6scir483gy5ls9vghehtpcmpoie16i",
       payload,
       "check"
-    ).then((data) => {
-      console.log(data);
-      const { isRegistered } = data;
-      console.log(isRegistered);
-      if (isRegistered) {
-        registeredContainer.innerText =
-          "Ya te encuentras registrado, verifica tu correo si necesitas recuperar tu tarjeta.";
-      } else {
-        console.log("im here");
+    )
+      .then((data) => {
+        console.log(data);
+        const { isRegistered } = data;
+        console.log(isRegistered);
+        if (isRegistered) {
+          registeredContainer.innerText =
+            "Ya te encuentras registrado, verifica tu correo si necesitas recuperar tu tarjeta.";
+        } else {
+          console.log("im here");
 
-        enrollUser(
-          "https://api.loopyloyalty.com/v1/enrol/1hZWYt3Ojg04YT6mpioHQM",
-          payload,
-          jwt
-        ).then((data) => {
-          console.log(data);
-          const { pid, url: cardLink } = data;
-          console.log({ pid, cardLink });
-          const hookPayload = { ...payload, pid, cardLink };
-          addUser(
-            "https://hook.eu1.make.com/xzrpqy7bgmv7v76cnkxm116yu1dzqi7h",
-            hookPayload
+          enrollUser(
+            "https://api.loopyloyalty.com/v1/enrol/1hZWYt3Ojg04YT6mpioHQM",
+            payload,
+            jwt
           ).then((data) => {
             console.log(data);
-            // const { ok, url } = data;
-            if (!data.ok) {
-              registeredContainer.innerText =
-                "Ocurrió un error, verifica los datos e intentalo de nuevo";
-              return;
-            }
-            window.location.href = data.url;
+            const { pid, url: cardLink } = data;
+            console.log({ pid, cardLink });
+            const hookPayload = { ...payload, pid, cardLink };
+            addUser(
+              "https://hook.eu1.make.com/xzrpqy7bgmv7v76cnkxm116yu1dzqi7h",
+              hookPayload
+            ).then((data) => {
+              console.log(data);
+              // const { ok, url } = data;
+              if (!data.ok) {
+                registeredContainer.innerText =
+                  "Ocurrió un error, verifica los datos e intentalo de nuevo";
+                return;
+              }
+              window.location.href = data.url;
+            });
           });
-        });
-      }
-    });
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   });
 });
 
