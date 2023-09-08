@@ -1,12 +1,13 @@
 const userForm = document.getElementById("user-form");
 
-const LL_API_KEY = "3Y27S3X1xBWXB2oXk2Ppwm";
+const LL_API_KEY = "6crqkffRap673FYh8sGYOE";
 const LL_API_SECRET =
-  "XxQ5w23gurcL9f4LFeoPUMPS7SCMSPIuPBxKTQHPvEgveg7UDuSXjMjhrb2D0dpE";
+  "Yd5cL1wuSICwdhLSLTyGa1BlTJgEJ2D7dbQATSMAkl7s0fqm8Kkjxs1NY9xLXbg3";
 const LL_USERNAME = "juanluis9900";
 const TERMS_URL =
-  "https://api.loopyloyalty.com/v1/campaign/id/1hZWYt3Ojg04YT6mpioHQM";
+  "https://api.loopyloyalty.com/v1/campaign/id/3Y2oVjoEzMUDDMu9LMy1FO";
 let jwt = "";
+const URL_PROGRAM = "3Y2oVjoEzMUDDMu9LMy1FO";
 
 const termsContainer = document.getElementById("terms-container");
 const priceContainer = document.getElementById("price-container");
@@ -26,6 +27,9 @@ async function enrollUser(url = "", data = {}, key) {
       body: JSON.stringify(data),
     });
   } catch (e) {
+    submitButton.disabled = false;
+    submitSpinner.classList.add("d-none");
+    console.log(e);
     return e;
   }
 
@@ -48,6 +52,8 @@ async function callWebhook(url = "", data = {}, petition) {
     return response.json();
   } catch (e) {
     console.log(e);
+    submitButton.disabled = false;
+    submitSpinner.classList.add("d-none");
     return false;
   }
 }
@@ -109,17 +115,21 @@ document.addEventListener("DOMContentLoaded", async function () {
     submitSpinner.classList.remove("d-none");
     registeredContainer.innerText = "";
     const valid = validateForm();
-    console.log(valid);
-    if (!valid) return;
+    console.log({ valid });
+
     let name = document.getElementById("nombre").value;
-    let lastName = document.getElementById("apellido").value;
     let email = document.getElementById("correo").value;
     let phone = phoneInput.getNumber();
-
+    if (!valid || name === "" || email === "" || phone === "") {
+      registeredContainer.innerText =
+        "Ocurrió un error, verifica los datos e inténtalo de nuevo.";
+      submitButton.disabled = false;
+      submitSpinner.classList.add("d-none");
+      return;
+    }
     let payload = {
       customerData: {
         Nombre: name,
-        Apellido: lastName,
         "Número telefónico": phone,
         "Correo electrónico": email,
       },
@@ -130,7 +140,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     jwt = generateJWT(LL_API_KEY, LL_API_SECRET, LL_USERNAME);
 
-    console.log(payload);
     //Check if the user is already registered
     callWebhook(
       "https://hook.eu1.make.com/rf6scir483gy5ls9vghehtpcmpoie16i",
@@ -138,7 +147,6 @@ document.addEventListener("DOMContentLoaded", async function () {
       "check"
     )
       .then((data) => {
-        console.log(data);
         const { isRegistered } = data;
         console.log(isRegistered);
         if (isRegistered) {
@@ -149,7 +157,7 @@ document.addEventListener("DOMContentLoaded", async function () {
           console.log("im here");
 
           enrollUser(
-            "https://api.loopyloyalty.com/v1/enrol/1hZWYt3Ojg04YT6mpioHQM",
+            "https://api.loopyloyalty.com/v1/enrol/3Y2oVjoEzMUDDMu9LMy1FO",
             payload,
             jwt
           ).then((data) => {

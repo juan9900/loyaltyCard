@@ -15,34 +15,31 @@
 <body>
   <nav class="navbar navbar-expand-lg ">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#"><img src="/assets/img/brand-logo.png" alt=""></a>
+      <a class="navbar-brand" href="#"><img src="/assets/img/brand-logo.jpg" alt=""></a>
 
     </div>
   </nav>
 
   <div class="row">
-    <h1 class="font-weight-bold text-center pt-3">Real Burger</h1>
-    <h2 class="text-center" id="price-container"></h2>
+    <h1 class="font-weight-bold text-center pt-3">Da Vinci Ristorante</h1>
+    <div class="title-container">
+      <h2 class="text-center" id="price-container"></h2>
+
+    </div>
 
     <div class=" col-10 offset-1 col-lg-4 offset-lg-4">
       <form action="" id="user-form" class="needs-validation" novalidate>
         <div class="form-group mt-3 mb-3">
-          <label for="nombre">Nombre:</label>
+          <label for="nombre">Nombre y apellido:</label>
           <input class="form-control" type="text" name="nombre" id="nombre" required>
           <div class="invalid-feedback">
-            Por favor ingresa tu nombre.
+            Por favor ingresa tu nombre y apellido.
           </div>
 
         </div>
 
 
-        <div class="form-group mt-3 mb-3"><label for="apellido">Apellido:</label>
-          <input class="form-control" type="text" name="apellido" id="apellido" required>
-          <div class="invalid-feedback">
-            Por favor ingresa tu apellido.
-          </div>
 
-        </div>
         <div class="form-group mt-3 mb-3 d-flex flex-column">
           <label for="numero">Número telefónico:</label>
           <input class="form-control" type="tel" name="numero" id="numero" required>
@@ -72,7 +69,7 @@
         <div id="registered-container" class="text-danger mb-2">
         </div>
 
-        <button id="submit-btn" class="btn btn-primary" type="submit">
+        <button id="submit-btn" class="mb-4 btn btn-primary" type="submit">
           <span id="submit-spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
           Enviar
         </button>
